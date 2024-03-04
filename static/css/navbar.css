@@ -1,0 +1,82 @@
+a {
+  text-decoration: none;
+  color: black;
+}
+
+nav {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  background-color: rgb(241, 245, 245);
+  border-bottom: 2px solid #dddada;
+}
+nav i {
+  font-weight: bold;
+  font-size: 25px;
+  margin: 20px 30px;
+  text-align: center;
+}
+
+.navbar__title-box {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  padding: 20px;
+}
+.navbar__title-box img {
+  width: 25px;
+  height: 25px;
+}
+
+.navbar__title {
+  font-weight: bold;
+  font-size: 25px;
+  padding: 10px;
+  text-align: center;
+}
+
+.navbar__menu {
+  display: flex;
+  list-style: none;
+  align-items: center;
+  justify-content: space-between;
+}
+
+.navbar__menu li {
+  text-align: center;
+  padding: 30px;
+}
+
+.navbar__toogleBtn {
+  display: none;
+  position: absolute;
+  right: 20px;
+  top: 10px;
+}
+
+@media screen and (max-width: 768px) {
+  nav {
+    flex-direction: column;
+    align-items: flex-start;
+    justify-content: center;
+  }
+  .navbar__menu {
+    display: none;
+    flex-direction: column;
+    align-items: center;
+    padding-left: 0px;
+  }
+  .navbar__menu li {
+    padding: 15px;
+  }
+  .navbar__toogleBtn {
+    display: block;
+  }
+  .navbar__menu.active {
+    display: flex;
+    width: 100%;
+    justify-content: center;
+  }
+}
+
+/*# sourceMappingURL=navbar.css.map */

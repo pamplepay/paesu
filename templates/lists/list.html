@@ -1,0 +1,220 @@
+<!DOCTYPE html>
+<html lang="en">
+  {% load static %}
+  {% if user.level == '2'%}
+
+  <head>
+    <meta charset="UTF-8" />
+    <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <link rel="stylesheet" href="{% static 'css/reset.css' %}" />
+    <link rel="stylesheet" href="{% static 'css/navbar.css' %}" />
+    <link rel="stylesheet" href="{% static 'css/list.css' %}" />
+    <link
+      rel="stylesheet"
+      href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.8.2/css/all.min.css"
+    />
+    <link
+      rel="shortcut icon"
+      type="image/x-icon"
+      href="{% static 'image/pample_logo_symbol.png' %}"
+    />
+
+    <title>폐수일지(WMS)</title>
+  </head>
+  <body>
+    <nav>
+      <div class="navbar__title-box">
+        <img
+          src="{% static 'image/pample_logo_symbol.png' %}"
+          class="navbar__icon"
+        />
+        <div class="navbar__title">
+          <a href="/list">폐수시설 운영일지</a>
+        </div>
+      </div>
+      <ul class="navbar__menu">
+        <li><a href="/insert/today">폐수일지 입력</a></li>
+        <li><a href="/list">폐수일지 리스트</a></li>
+        <li><a href="/changeInfo">사용자정보 변경</a></li>
+        <li><a href="/logout">로그아웃</a></li>
+      </ul>
+      <a href="#" class="navbar__toogleBtn">
+        <i class="fas fa-bars"></i>
+      </a>
+    </nav>
+
+    <div class="content">
+      <div class="content__box"></div>
+      <form method="get" action=".">
+        <div class="date">
+          <select id="year" name="year" onchange="this.form.submit()">
+            <option value=""></option>
+          </select>
+          <select id="month" name="month" onchange="this.form.submit()"></select>
+        </div>
+        <!-- <div>
+          <select name="initial-select" id="initial-select"></select>
+          <select name="filtered-select" id="filtered-select"></select>
+        </div> -->
+      </form>
+      <div class="content__box">
+        <table>
+          <tr>
+            <th>날짜
+            </th>
+            <th>폐수배출량</th>
+            <th>사용량</th>
+            <th>상태</th>
+            <th>엑셀</th>
+          </tr>
+          {% for date,today,used,status in list %}
+          <tr>
+            <td>{{date}}</td>
+            <td>{{today}}</td>
+            <td>{{used}}</td>
+            <td>
+              {% if status == "입력필요" %}
+              <button class="necessary" onclick="location.href='/insert/{{date}}'" >{{status}}</button>
+            </td>
+          <td></td>
+              {% else %}
+              <button class="complete" onclick="location.href='/insert/{{date}}'" >{{status}}</button>
+              </td>
+              <td><button onclick="location.href='/download-excel/?selected_date={{date}}&selected_corp={{user.business_name}}' " target="_blank">다운로드</button></td>
+              {%  endif %}
+          </tr>
+          {% endfor %}
+        </table>
+      </div>
+      {% with list|last as last %}
+      <button class="submit__button"
+        onclick="location.href='/download-excel-all/?selected_corp={{user.business_name}}&start_date={{list.0.0}}&end_date={{last.0}}' " target="_blank">전체 다운로드</button>
+      {% endwith %}
+    </div>
+
+    <script src="//code.jquery.com/jquery-3.6.0.min.js"></script>
+    <script src="{% static 'js/list.js' %}"></script>
+    <script src="https://unpkg.com/hangul-js" type="text/javascript"></script>
+    <script src="{% static 'js/nav.js' %}"></script>
+  </body>
+
+  {% else %}
+
+  <head>
+    <meta charset="UTF-8" />
+    <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <link rel="stylesheet" href="{% static 'css/reset.css' %}" />
+    <link rel="stylesheet" href="{% static 'css/navbar.css' %}" />
+    <link rel="stylesheet" href="{% static 'css/listAdmin.css' %}" />
+    <link
+      rel="stylesheet"
+      href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.8.2/css/all.min.css"
+    />
+    <link
+      rel="shortcut icon"
+      type="image/x-icon"
+      href="{% static 'image/pample_logo_symbol.png' %}"
+    />
+    <link
+      rel="stylesheet"
+      href="https://cdnjs.cloudflare.com/ajax/libs/jqueryui/1.12.1/jquery-ui.min.css"
+      integrity="sha512-aOG0c6nPNzGk+5zjwyJaoRUgCdOrfSDhmMID2u4+OIslr0GjpLKo7Xm0Ao3xmpM4T8AmIouRkqwj1nrdVsLKEQ=="
+      crossorigin="anonymous"
+      referrerpolicy="no-referrer"
+    />
+    <title>폐수일지(WMS)</title>
+  </head>
+  <body>
+    <nav>
+      <div class="navbar__title-box">
+        <img src="{% static 'image/pample_logo_symbol.png' %}"class="navbar__icon" />
+        <div class="navbar__title">
+          <a href="/list">폐수시설 운영일지</a>
+        </div>
+      </div>
+      <ul class="navbar__menu">
+        <li><a href="/insert/today">폐수일지 입력</a></li>
+        <li><a href="/list">폐수일지 리스트</a></li>
+        <li><a href="/changeInfo">사용자정보 변경</a></li>
+        <li><a href="/logout">로그아웃</a></li>
+      </ul>
+      <a href="#" class="navbar__toogleBtn">
+        <i class="fas fa-bars"></i>
+      </a>
+    </nav>
+    <div class="content">
+      <div class="content__box">
+        <form method="get" action=".">
+          <div class="date">
+            <input name="start" class="datepicker" id="datepicker__from" onchange="this.form.submit()"/>
+            <input name="end" class="datepicker" id="datepicker__until" onchange="this.form.submit()"/>
+          </div>
+          <div class="filter">
+            <select name="initial-select" id="initial-select"></select>
+            <select name="filtered-select" id="filtered-select" onchange="this.form.submit()" value="{{selected_corp}}"></select>
+          </div>
+        </form>
+        <div class="content__box">
+          <table>
+            <tr>
+              <th>날짜</th>
+              <th>폐수배출량</th>
+              <th>사용량</th>
+              <th>상태</th>
+              <th>엑셀</th>
+            </tr>
+            {% for date,today,used,status in list %}
+            <tr>
+              <td>{{date}}</td>
+              <td>{{today}}</td>
+              <td>{{used}}</td>
+              <td>
+                {% if status == "입력필요" %}
+                <span class="necessary">{{status}}</span>
+                {% else %}
+                <span class="complete">{{status}}</span>
+                {%  endif %}
+              </td>
+              <td><button onclick="location.href='/download-excel/?selected_date={{date}}&selected_corp={{selected_corp}}' " target="_blank">다운로드</button></td></td>
+            </tr>
+            {% endfor %}
+          </table>
+        </div>
+        {% with list|last as last %}
+        <button class="submit__button"
+        onclick="location.href='/download-excel-all/?selected_corp={{selected_corp}}&start_date={{list.0.0}}&end_date={{last.0}}' ">전체 다운로드</button>
+      </div>
+      {% endwith %}
+    </div>
+    <script
+      src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.6.0/jquery.min.js"
+      integrity="sha512-894YE6QWD5I59HgZOGReFYm4dnWc1Qt5NtvYSaNcOP+u1T9qYdvdihz0PPSiiqn/+/3e7Jo4EaG7TubfWGUrMQ=="
+      crossorigin="anonymous"
+      referrerpolicy="no-referrer"
+    ></script>
+
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.6.0/jquery.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/timepicker/1.3.5/jquery.timepicker.min.js"></script>
+
+    <script src="//code.jquery.com/jquery-1.11.0.min.js"></script>
+    <script
+      src="https://cdnjs.cloudflare.com/ajax/libs/jqueryui/1.12.1/jquery-ui.min.js"
+      integrity="sha512-uto9mlQzrs59VwILcLiRYeLKPPbS/bT71da/OEBYEwcdNUk8jYIy+D176RYoop1Da+f9mvkYrmj5MCLZWEtQuA=="
+      crossorigin="anonymous"
+      referrerpolicy="no-referrer"
+    ></script>
+    <script src="https://unpkg.com/hangul-js" type="text/javascript"></script>
+    <script>
+      const data = JSON.parse("{{ corp|escapejs }}");
+      const inputString = "주유소명";
+      data.unshift(inputString);
+    </script>
+    <script src="{% static 'js/listAdmin.js' %}"></script>
+    <script src="{% static 'js/nav.js' %}"></script>
+  </body>
+
+  {% endif %} 
+
+</html>

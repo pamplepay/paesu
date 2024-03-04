@@ -1,0 +1,116 @@
+<!DOCTYPE html>
+<html lang="ko">
+{% load static %}
+
+<head>
+
+  <meta charset="UTF-8">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  
+  <title>폐수일지(WMS)</title>
+
+  <link rel="stylesheet" type="text/css" href="{% static 'css/admin/default.css' %}">
+  <link rel="stylesheet" type="text/css" href="{% static 'css/admin/common.css' %}">
+  <link rel="stylesheet" type="text/css" href="{% static 'css/admin/admin_layout.css' %}">
+  <link rel="stylesheet" type="text/css" href="{% static 'css/admin/admin_contents.css' %}">
+
+</head>
+
+<body>
+  <form
+    method="post"
+	id="loginForm"
+	name="loginForm"
+	action="." >
+
+	{% csrf_token %}
+
+	  
+	<div class="login_area">
+	  <div id="login_box">
+		<h1></h1>
+		<h2>폐수일지(WMS)</h2>
+		
+		<fieldset>
+		  <legend>로그인폼</legend>
+		    <ul>
+
+			  <li>
+				<span>
+				  <img src="{% static 'imgs/admin/id_text.png' %}" alt="아이디" />
+				</span>
+				
+				<input
+				  type="text"
+				  id="formLoginID"
+				  name="user_id"
+				  class="text1"
+				  title="아이디를 입력하세요."
+				  maxlength="40"
+				  data-validate-rule="{required:true, rangelength:[1,100]}"
+				  data-alias="아이디" />
+			  </li>
+			  
+			  <li>
+				<span>
+				  <img src="{% static 'imgs/admin/password_text.png' %}" alt="비밀번호" />
+				</span>
+				
+				<input
+				  type="password"
+				  id="formLoginPwd"
+				  name="password"
+				  class="text1"
+				  title="비밀번호를 입력하세요."
+				  maxlength="40"
+				  data-validate-rule="{required:true, alphanumeric:false, rangelength:[1,100]}"
+				  data-alias="비밀번호" onkeypress="javascript:capsLock(event);"
+				  value="" />
+				  
+				  <span style="display:none" id="capsLockE">
+					CapsLock이 켜져있습니다.
+				  </span> 
+			  </li>
+			</ul>
+			
+			<p class="id_save">
+			  <input type="checkbox" id="saveID" />
+			  <label for="saveID">아이디저장</label>
+			</p>
+			
+			<input
+			  type="image"
+			  src="{% static 'imgs/admin/login_btn.png' %}"
+			  alt="login"
+			  class="login_btn" />
+			  
+			<p class="txt1">Copyright 일리움(주). All Rights Reserved</p>
+			<p class="txt2">서비스 제휴 및 문의 : 010-4127-6257</p>
+			<p class="txt3">ydkwon@ilium.co.kr</p>
+		
+		</fieldset> 
+	  </div>
+	</div>
+  </form>
+</body>
+
+<script type="text/javascript">
+	
+	function capsLock(e) {
+		var keyCode = 0;
+		var shiftKey=false;
+		keyCode=e.keyCode;
+		shiftKey=e.shiftKey;
+		if(((keyCode >=65 && keyCode <= 90)&& !shiftKey)||((keyCode >=97 && keyCode <=122)&& shiftKey)){
+			$('#capsLockE').show();
+			return;
+		}else {
+			$('#capsLockE').hide();
+			return;
+		}
+	}	
+
+</script>
+
+</html>

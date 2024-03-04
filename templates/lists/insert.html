@@ -1,0 +1,915 @@
+<!DOCTYPE html>
+<html lang="en">
+  {% load static %}
+
+  <head>
+    <meta charset="UTF-8" />
+    <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <link rel="stylesheet" href="{% static 'css/reset.css' %}" />
+    <link rel="stylesheet" href="{% static 'css/insert.css' %}" />
+    <link rel="stylesheet" href="{% static 'css/navbar.css' %}" />
+    <link
+      rel="stylesheet"
+      href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.8.2/css/all.min.css"
+    />
+    <link
+      rel="shortcut icon"
+      type="image/x-icon"
+      href="{% static 'image/pample_logo_symbol.png' %}"
+    />
+    <link
+      rel="stylesheet"
+      href="https://cdnjs.cloudflare.com/ajax/libs/jqueryui/1.12.1/jquery-ui.min.css"
+      integrity="sha512-aOG0c6nPNzGk+5zjwyJaoRUgCdOrfSDhmMID2u4+OIslr0GjpLKo7Xm0Ao3xmpM4T8AmIouRkqwj1nrdVsLKEQ=="
+      crossorigin="anonymous"
+      referrerpolicy="no-referrer"
+    />
+    <link
+      rel="stylesheet"
+      href="//cdnjs.cloudflare.com/ajax/libs/timepicker/1.3.5/jquery.timepicker.min.css"
+    />
+    <title>폐수일지(WMS)</title>
+  </head>
+  <body>
+    <nav>
+      <div class="navbar__title-box">
+        <img
+          src="{% static 'image/pample_logo_symbol.png' %}"
+          class="navbar__icon"
+        />
+        <div class="navbar__title">
+          <a href="/list">폐수시설 운영일지</a>
+        </div>
+      </div>
+      <ul class="navbar__menu">
+        <li><a href="/insert/today">폐수일지 입력</a></li>
+        <li><a href="/list">폐수일지 리스트</a></li>
+        <li><a href="/changeInfo">사용자정보 변경</a></li>
+        <li><a href="/logout">로그아웃</a></li>
+      </ul>
+      <a href="#" class="navbar__toogleBtn">
+        <i class="fas fa-bars"></i>
+      </a>
+    </nav>
+    <form
+      method="post"
+      id="form1"
+      action="./{{date}}"
+      onsubmit="return onCheck();"
+    >
+      {% csrf_token %}
+      <div class="content">
+        <ul class="content__box">
+          <li>1. 작성일자</li>
+          <table>
+            <thead>
+              <tr>
+                <th>일자</th>
+                <th>날씨</th>
+                <th>온도</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr>
+                <td class="date-td">
+                  <input id="datepicker" name="date" value="{{date}}" onchange="location.href=this.value"/>
+                  <div>
+                    휴일 <input name="rest" type="checkbox" 
+                    {% if psrecord.date_ck == 'on' %} checked {% else %}{% endif %}/>
+                  </div>
+                </td>
+                <td id="weather">
+                  <input
+                    name="weather"
+                    class="text-input"
+                    type="text"
+                    value="{{psrecord.date_weather}}"
+                  />
+                </td>
+                <td id="temperature">
+                  <input
+                    name="temperature"
+                    class="text-input"
+                    type="text"
+                    value="{{psrecord.date_temperature}}"
+                  />
+                </td>
+              </tr>
+            </tbody>
+          </table>
+          <li>2. 사용량과 배출량(필수)</li>
+          <table>
+            <thead>
+              <tr>
+                <th colspan="3">상수도(㎥)</th>
+              </tr>
+              <tr>
+                <th>전일</th>
+                <th class="usage">사용량</th>
+                <th>금일</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr>
+                <td>
+                  <input
+                    type="text"
+                    name="waterworks_prevd"
+                    value="{{waterworks_prevd}}"
+                    class="readOnly"
+                    readonly
+                  />
+                </td>
+                <td>
+                  <input
+                    id="1"
+                    type="text"
+                    name="waterworks_used"
+                    value="{{psrecord.waterworks_used}}"
+                    class="readOnly"
+                    readonly
+                  />
+                </td>
+                <td>
+                  <input
+                    name="waterworks_today"
+                    class="text-input"
+                    id="required-input-1"
+                    type="number"
+                    value="{{psrecord.waterworks_today}}"
+                    oninput="onChange(this.value,'{{waterworks_prevd}}',1)"
+                  />
+                </td>
+              </tr>
+            </tbody>
+          </table>
+          <table>
+            <thead>
+              <tr>
+                <th colspan="3">지하수(㎥)</th>
+              </tr>
+              <tr>
+                <th>전일</th>
+                <th class="usage">사용량</th>
+                <th>금일</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr>
+                <td>
+                  <input
+                    type="text"
+                    name="underwater_prevd"
+                    value="{{underwater_prevd}}"
+                    class="readOnly"
+                    readonly
+                  />
+                </td>
+                <td>
+                  <input
+                    id="2"
+                    type="text"
+                    name="underwater_used"
+                    value="{{psrecord.underwater_used}}"
+                    class="readOnly"
+                    readonly
+                  />
+                </td>
+                <td>
+                  <input
+                    name="underwater_today"
+                    class="text-input"
+                    id="required-input-2"
+                    type="number"
+                    value="{{psrecord.underwater_today}}"
+                    oninput="onChange(this.value,'{{underwater_prevd}}',2)"
+                  />
+                </td>
+              </tr>
+            </tbody>
+          </table>
+          <table>
+            <thead>
+              <tr>
+                <th colspan="3">
+                  폐수배출량(㎥)
+                  <!-- <span class="usage">사용 유무</span>
+                  <input name="rest" type="checkbox" {% if psrecord.diswaste_ck == 'on' %} checked {% else %}{% endif %} /> -->
+                </th>
+              </tr>
+              <tr>
+                <th>전일</th>
+                <th class="usage">사용량</th>
+                <th>금일</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr>
+                <td>
+                  <input
+                    type="text"
+                    name="diswaste_prevd"
+                    value="{{diswaste_prevd}}"
+                    class="readOnly"
+                    readonly
+                  />
+                </td>
+                <td>
+                  <input
+                    id="3"
+                    type="text"
+                    name="diswaste_used"
+                    value="{{psrecord.diswaste_used}}"
+                    class="readOnly"
+                    readonly
+                  />
+                </td>
+                <td>
+                  <input
+                    name="diswaste_today"
+                    class="text-input"
+                    id="required-input-3"
+                    type="number"
+                    value="{{psrecord.diswaste_today}}"
+                    oninput="onChange(this.value,'{{diswaste_prevd}}',3)"
+                  />
+                </td>
+              </tr>
+            </tbody>
+          </table>
+          <li>3. 전력 사용량(필수)</li>
+          <table>
+            <thead>
+              <tr>
+                <th colspan="3">전산전력계지침</th>
+              </tr>
+              <tr>
+                <th>전일</th>
+                <th class="usage">사용량</th>
+                <th>금일</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr>
+                <td>
+                  <input
+                    type="text"
+                    name="poweruse_prevd"
+                    value="{{poweruse_prevd}}"
+                    class="readOnly"
+                    readonly
+                  />
+                </td>
+                <td>
+                  <input
+                    id="4"
+                    type="text"
+                    name="poweruse_used"
+                    value="{{psrecord.poweruse_used}}"
+                    class="readOnly"
+                    readonly
+                  />
+                </td>
+                <td>
+                  <input
+                    name="poweruse_today"
+                    class="text-input"
+                    id="required-input-4"
+                    type="number"
+                    value="{{psrecord.poweruse_today}}"
+                    oninput="onChange(this.value,'{{poweruse_prevd}}',4)"
+                  />
+                </td>
+              </tr>
+            </tbody>
+          </table>
+
+          <li>
+            4. 추가사항(선택) <input type="checkbox" class="select__button" />
+          </li>
+        </ul>
+        <ul class="select__content">
+          <div class="additional__title">전력 사용량(선택)</div>
+          <table>
+            <thead>
+              <tr>
+                <th>가동 시작시간</th>
+                <th>가동 종료시간</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr>
+                <td>
+                  <input
+                    type="text"
+                    name="time1"
+                    class="form-control time1"
+                    value="{{psrecord.poweruse_start}}"
+                  />
+                </td>
+                <td>
+                  <input
+                    type="text"
+                    name="time2"
+                    class="form-control time2"
+                    value="{{psrecord.poweruse_end}}"
+                  />
+                </td>
+              </tr>
+            </tbody>
+          </table>
+          <table>
+            <tr>
+              <th>참고사항</th>
+              <td>
+                <input
+                  type="text"
+                  name="poweruse_etc"
+                  class="text-input"
+                  value="{{psrecord.poweruse_etc}}"
+                />
+              </td>
+            </tr>
+          </table>
+          <div class="additional__title">폐수발생량, 재사용량</div>
+          <table>
+            <thead>
+              <tr>
+                <th>폐수발생량(㎥)</th>
+                <td>
+                  <input
+                    type="number"
+                    name="genwaster"
+                    class="additional__input"
+                    value="{{psrecord.genwaster}}"
+                  />
+                </td>
+                <th>재사용량(㎥)</th>
+                <td>
+                  <input
+                    type="number"
+                    name="reuse"
+                    class="additional__input"
+                    value="{{psrecord.reuse}}"
+                  />
+                </td>
+              </tr>
+            </thead>
+          </table>
+          <div class="additional__title">원료 또는 첨가제등의 사용량(선택)</div>
+          <table>
+            <tbody>
+              <tr>
+                <th colspan="2">세차대수</th>
+                <td colspan="2">
+                  <input
+                    type="number"
+                    name="at_washnum"
+                    class="additional__input"
+                    value="{{psrecord.at_washnum}}"
+                  />&nbsp;대
+                </td>
+              </tr>
+              <tr>
+                <th>세제</th>
+                <td>
+                  <input
+                    type="text"
+                    name="at_detergent"
+                    class="additional__title__input"
+                    value="{{psrecord.at_detergent}}"
+                  />
+                </td>
+                <th>세차 1대당</th>
+                <td>
+                  <input
+                    type="number"
+                    name="at_detergent_use"
+                    class="additional__input"
+                    value="{{psrecord.at_detergent_use}}"
+                  />&nbsp;mL
+                </td>
+              </tr>
+              <tr>
+                <th>왁스</th>
+                <td>
+                  <input
+                    type="number"
+                    name="at_wax"
+                    class="additional__title__input"
+                    value="{{psrecord.at_wax}}"
+                  />
+                </td>
+                <th>세차 1대당</th>
+                <td>
+                  <input
+                    type="number"
+                    name="at_wax_use"
+                    class="additional__input"
+                    value="{{psrecord.at_wax_use}}"
+                  />&nbsp;mL
+                </td>
+              </tr>
+              <tr>
+                <th>폼</th>
+                <td>
+                  <input
+                    type="number"
+                    name="at_pom"
+                    class="additional__title__input"
+                    value="{{psrecord.at_pom}}"
+                  />
+                </td>
+                <th>세차 1대당</th>
+                <td>
+                  <input
+                    type="number"
+                    name="at_pom_use"
+                    class="additional__input"
+                    value="{{psrecord.at_pom_use}}"
+                  />&nbsp;mL
+                </td>
+              </tr>
+              <tr>
+                <th>
+                  <input
+                    type="text"
+                    name="at_sub1"
+                    class="additional__title__input"
+                    value="{{psrecord.at_sub1}}"
+                  />
+                </th>
+                <td>
+                  <input
+                    type="number"
+                    name="at_sub1_memo"
+                    class="additional__title__input"
+                    value="{{psrecord.at_sub1_memo}}"
+                  />
+                </td>
+                <th>세차 1대당</th>
+                <td>
+                  <input
+                    type="number"
+                    name="at_sub1_use"
+                    class="additional__input"
+                    value="{{psrecord.at_sub1_use}}"
+                  />&nbsp;mL
+                </td>
+              </tr>
+              <tr>
+                <th>
+                  <input
+                    type="text"
+                    name="at_sub2"
+                    class="additional__title__input"
+                    value="{{psrecord.at_sub2}}"
+                  />
+                </th>
+                <td>
+                  <input
+                    type="number"
+                    name="at_sub2_memo"
+                    class="additional__title__input"
+                    value="{{psrecord.at_sub2_memo}}"
+                  />
+                </td>
+                <th>세차 1대당</th>
+                <td>
+                  <input
+                    type="number"
+                    name="at_sub2_use"
+                    class="additional__input"
+                    value="{{psrecord.at_sub2_use}}"
+                  />&nbsp;mL
+                </td>
+              </tr>
+              <tr>
+                <th>
+                  <input
+                    type="text"
+                    name="at_sub3"
+                    class="additional__title__input"
+                    value="{{psrecord.at_sub3}}"
+                  />
+                </th>
+                <td>
+                  <input
+                    type="number"
+                    name="at_sub3_memo"
+                    class="additional__title__input"
+                    value="{{psrecord.at_sub3_memo}}"
+                  />
+                </td>
+                <th>세차 1대당</th>
+                <td>
+                  <input
+                    type="number"
+                    name="at_sub3_use"
+                    class="additional__input"
+                    value="{{psrecord.at_sub3_use}}"
+                  />&nbsp;mL
+                </td>
+              </tr>
+            </tbody>
+          </table>
+          <div class="additional__title">운영시간(선택)</div>
+          <table>
+            <tr>
+              <th>시작 시간</th>
+              <td>
+                <input
+                  type="text"
+                  name="op_start"
+                  class="form-control time1"
+                  value="{{psrecord.op_start}}"
+                />
+              </td>
+              <th>종료 시간</th>
+              <td>
+                <input
+                  type="text"
+                  name="op_end"
+                  class="form-control time2"
+                  value="{{psrecord.op_end}}"
+                />
+              </td>
+            </tr>
+          </table>
+          <div class="additional__title">배출시설 가동 시간대(선택)</div>
+          <table>
+            <tr>
+              <th>시작 시간</th>
+              <td>
+                <input
+                  type="text"
+                  name="emission_start"
+                  class="form-control time1"
+                  value="{{psrecord.emission_start}}"
+                />
+              </td>
+              <th>종료 시간</th>
+              <td>
+                <input
+                  type="text"
+                  name="emission_end"
+                  class="form-control time2"
+                  value="{{psrecord.emission_end}}"
+                />
+              </td>
+            </tr>
+          </table>
+          <div class="additional__title">방지시설 가동 시간대(선택)</div>
+          <table>
+            <tr>
+              <th>시작 시간</th>
+              <td>
+                <input
+                  type="text"
+                  name="prev_start"
+                  class="form-control time1"
+                  value="{{psrecord.prev_start}}"
+                />
+              </td>
+              <th>종료 시간</th>
+              <td>
+                <input
+                  type="text"
+                  name="prev_end"
+                  class="form-control time2"
+                  value="{{psrecord.prev_end}}"
+                />
+              </td>
+            </tr>
+          </table>
+          <div class="additional__title">약품 사용량(선택)</div>
+          <table>
+            <tr>
+              <th>약품명</th>
+              <td>
+                <input
+                  type="text"
+                  name="med1_name"
+                  class="additional__title__input"
+                  value="{{psrecord.med1_name}}"
+                />
+              </td>
+              <th>사용량</th>
+              <td>
+                <input
+                  type="number"
+                  name="med1_used"
+                  class="additional__input"
+                  value="{{psrecord.med1_used}}"
+                />&nbsp;mL
+              </td>
+            </tr>
+            <tr>
+              <th>구입량</th>
+              <td>
+                <input
+                  type="text"
+                  name="med1_buy"
+                  class="additional__title__input"
+                  value="{{psrecord.med1_buy}}"
+                />
+              </td>
+              <th>잔고량</th>
+              <td>
+                <input
+                  type="number"
+                  name="med1_balance"
+                  class="additional__input"
+                  value="{{psrecord.med1_balance}}"
+                />&nbsp;mL
+              </td>
+            </tr>
+            <tr>
+              <th colspan="1">비고</th>
+              <td colspan="3">
+                <input
+                  type="text"
+                  name="med1_etc"
+                  class="additional__title__input"
+                  value="{{psrecord.med1_etc}}"
+                />
+              </td>
+            </tr>
+          </table>
+          <table>
+            <tr>
+              <th>약품명</th>
+              <td>
+                <input
+                  type="text"
+                  name="med2_name"
+                  class="additional__title__input"
+                  value="{{psrecord.med2_name}}"
+                />
+              </td>
+              <th>사용량</th>
+              <td>
+                <input
+                  type="number"
+                  name="med2_used"
+                  class="additional__input"
+                  value="{{psrecord.med2_used}}"
+                />&nbsp;mL
+              </td>
+            </tr>
+            <tr>
+              <th>구입량</th>
+              <td>
+                <input
+                  type="text"
+                  name="med2_buy"
+                  class="additional__title__input"
+                  value="{{psrecord.med2_buy}}"
+                />
+              </td>
+              <th>잔고량</th>
+              <td>
+                <input
+                  type="number"
+                  name="med2_balance"
+                  class="additional__input"
+                  value="{{psrecord.med2_balance}}"
+                />&nbsp;mL
+              </td>
+            </tr>
+            <tr>
+              <th colspan="1">비고</th>
+              <td colspan="3">
+                <input
+                  type="text"
+                  name="med2_etc"
+                  class="additional__title__input"
+                  value="{{psrecord.med2_etc}}"
+                />
+              </td>
+            </tr>
+          </table>
+          <table>
+            <tr>
+              <th>약품명</th>
+              <td>
+                <input
+                  type="text"
+                  name="med3_name"
+                  class="additional__title__input"
+                  value="{{psrecord.med3_name}}"
+                />
+              </td>
+              <th>사용량</th>
+              <td>
+                <input
+                  type="number"
+                  name="med3_used"
+                  class="additional__input"
+                  value="{{psrecord.med3_used}}"
+                />&nbsp;mL
+              </td>
+            </tr>
+            <tr>
+              <th>구입량</th>
+              <td>
+                <input
+                  type="text"
+                  name="med3_buy"
+                  class="additional__title__input"
+                  value="{{psrecord.med3_buy}}"
+                />
+              </td>
+              <th>잔고량</th>
+              <td>
+                <input
+                  type="number"
+                  name="med3_balance"
+                  class="additional__input"
+                  value="{{psrecord.med3_balance}}"
+                />&nbsp;mL
+              </td>
+            </tr>
+            <tr>
+              <th colspan="1">비고</th>
+              <td colspan="3">
+                <input
+                  type="text"
+                  name="med3_etc"
+                  class="additional__title__input"
+                  value="{{psrecord.med3_etc}}"
+                />
+              </td>
+            </tr>
+          </table>
+          <table>
+            <tr>
+              <th>약품명</th>
+              <td>
+                <input
+                  type="text"
+                  name="med4_name"
+                  class="additional__title__input"
+                  value="{{psrecord.med4_name}}"
+                />
+              </td>
+              <th>사용량</th>
+              <td>
+                <input
+                  type="number"
+                  name="med4_used"
+                  class="additional__input"
+                  value="{{psrecord.med4_used}}"
+                />&nbsp;mL
+              </td>
+            </tr>
+            <tr>
+              <th>구입량</th>
+              <td>
+                <input
+                  type="text"
+                  name="med4_buy"
+                  class="additional__title__input"
+                  value="{{psrecord.med4_buy}}"
+                />
+              </td>
+              <th>잔고량</th>
+              <td>
+                <input
+                  type="number"
+                  name="med4_balance"
+                  class="additional__input"
+                  value="{{psrecord.med4_balance}}"
+                />&nbsp;mL
+              </td>
+            </tr>
+            <tr>
+              <th colspan="1">비고</th>
+              <td colspan="3">
+                <input
+                  type="text"
+                  name="med4_etc"
+                  class="additional__title__input"
+                  value="{{psrecord.med4_etc}}"
+                />
+              </td>
+            </tr>
+          </table>
+          <div class="additional__title">슬러지 처리시설(선택)</div>
+          <table>
+            <tr>
+              <th>슬러지발생량</th>
+              <td>
+                <input
+                  type="text"
+                  name="sluge_gene"
+                  class="additional__input"
+                  value="{{psrecord.sluge_gene}}"
+                />
+              </td>
+              <th>처리량</th>
+              <td>
+                <input
+                  type="text"
+                  name="sluge_used"
+                  class="additional__input"
+                  value="{{psrecord.sluge_used}}"
+                />
+              </td>
+            </tr>
+            <tr>
+              <th>보관량</th>
+              <td>
+                <input
+                  type="text"
+                  name="sluge_keep"
+                  class="additional__input"
+                  value="{{psrecord.sluge_keep}}"
+                />
+              </td>
+              <th>함수율(%)</th>
+              <td>
+                <input
+                  type="text"
+                  name="sluge_func"
+                  class="additional__input"
+                  value="{{psrecord.sluge_func}}"
+                />
+              </td>
+            </tr>
+            <tr>
+              <th>보관장소</th>
+              <td>
+                <input
+                  type="text"
+                  name="sluge_place"
+                  class="additional__input"
+                  value="{{psrecord.sluge_place}}"
+                />
+              </td>
+              <th>처리장소</th>
+              <td>
+                <input
+                  type="text"
+                  name="sluge_selfplace"
+                  class="additional__input"
+                  value="{{psrecord.sluge_selfplace}}"
+                />
+              </td>
+            </tr>
+            <tr>
+              <th colspan="2">위탁처리업소명</th>
+              <td colspan="2">
+                <input
+                  type="text"
+                  name="sluge_corp"
+                  class="additional__input"
+                  value="{{psrecord.sluge_corp}}"
+                />
+              </td>
+            </tr>
+          </table>
+          <div class="additional__title">
+            방지시설 고장유무 및 특기사항(선택)
+          </div>
+          <input
+            type="text"
+            name="remarks"
+            class="long"
+            value="{{psrecord.remarks}}"
+          />
+          <div class="additional__title">지도 또는 점검 받은 사항(선택)</div>
+          <input
+            type="text"
+            name="advise"
+            class="long"
+            value="{{psrecord.advise}}"
+          />
+        </ul>
+        <button type="submit" class="submit__button" id="submit">저장</button>
+      </div>
+    </form>
+    <script src="//code.jquery.com/jquery-1.11.0.min.js"></script>
+    <script
+      src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.6.0/jquery.min.js"
+      integrity="sha512-894YE6QWD5I59HgZOGReFYm4dnWc1Qt5NtvYSaNcOP+u1T9qYdvdihz0PPSiiqn/+/3e7Jo4EaG7TubfWGUrMQ=="
+      crossorigin="anonymous"
+      referrerpolicy="no-referrer"
+    ></script>
+
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.6.0/jquery.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/timepicker/1.3.5/jquery.timepicker.min.js"></script>
+
+    <script src="//code.jquery.com/jquery-1.11.0.min.js"></script>
+    <script
+      src="https://cdnjs.cloudflare.com/ajax/libs/jqueryui/1.12.1/jquery-ui.min.js"
+      integrity="sha512-uto9mlQzrs59VwILcLiRYeLKPPbS/bT71da/OEBYEwcdNUk8jYIy+D176RYoop1Da+f9mvkYrmj5MCLZWEtQuA=="
+      crossorigin="anonymous"
+      referrerpolicy="no-referrer"
+    ></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/timepicker/1.3.5/jquery.timepicker.min.js"></script>
+    <script src="{% static 'js/nav.js' %}"></script>
+    <script src="{% static 'js/insert.js' %}"></script>
+  </body>
+</html>

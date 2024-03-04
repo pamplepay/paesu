@@ -1,0 +1,80 @@
+@charset "utf-8";
+
+body {margin:0;padding:0;font-size:0.75em;line-height:1.5;font-family:Dotum,"돋움",tahoma;color:#898989;}
+
+/* inline */
+img {display:inline-block;border:0 none;vertical-align:top;}
+a, cite, code, dfn, del, em, ins, label, q, span, strong {display:inline-block;vertical-align:top;}
+cite, em, dfn {font-style:normal;}
+sub {vertical-align:bottom;font-family:helvetica;}
+sup {vertical-align:top;font-family:helvetica;}
+
+/* block */
+h1, h2, h3, h4, h5, h6 {margin:0;font-size:1em;}
+address {font-style:normal;}
+blockquote, p {margin:0;}
+pre {margin:0;font-size:1em;}
+
+hr {display:none;}
+
+/* table */
+table {border-collapse:separate;border-spacing:0;}
+caption {display:none;}
+th,
+td {padding:0;vertical-align:top;text-align:left;font-weight:normal;} /* opara height=18px */
+
+/* list */
+dd, dl, ol, ul {margin:0;padding:0;}
+li {list-style-type:none;}
+
+/* form */
+form {margin:0;}
+fieldset {margin:0;padding:0;border:0 none;}
+legend {display:none;}
+input {vertical-align:top;}
+select {vertical-align:top;}
+input.text {font-size:11px;height:1em;line-height:1;padding:5px 4px 4px;color:#777777;border:1px solid #dbdbdb;}
+input.check,
+input.radio {width:13px;height:13px;margin:2px 7px 0 0;padding:0;}
+.msie6 input.text, .msie7 input.text {margin:-1px 0;}
+.ui-form-hover {border:1px solid #f6af39 !important;}
+
+select {height:20px;font-size:12px;line-height:1.5;margin:0;font-family:arial;color:#727272;vertical-align:top;border:1px solid #cccccc;}
+/* 버튼 엘리먼트 하위에 이미지 적용 */
+.img-button {padding:0;border:none 0;background:none;cursor:pointer;overflow:visible;vertical-align:top;font-size:0;line-height:0;}
+.img-button img  {display:block;position:relative;}
+body.msie6 .img-button, body.msie7 .img-button {margin:0 0 -1px 4px;}
+/*body.safari .img-button {margin:-1px -3px ;}*/
+.bg-button {margin:0;padding:0;border:none 0;background:none;cursor:pointer;overflow:visible;height:1.75em;vertical-align:top;font-size:1em;line-height:1;}
+.bg-button span {padding:2px 5px 0 !important;white-space:nowrap;}
+.msie6 .bg-button, .msie7 .bg-button {margin-left:4px;}
+button::-moz-focus-inner { border: 0; padding: 0; } /* reset extra padding in Firefox */
+textarea {font-size:12px; color:#777; border:1px solid #ccc; margin:0;}
+.msie6 textarea, .msie7 textarea {margin:-1px 0;}
+
+/* basic */
+.hidden-obj {position:absolute;visibility:hidden;top:-9000px;left:-9000px;}
+.display-none {display:none;}
+.text-c {text-align:center !important;}
+.text-l {text-align:left !important;}
+.text-r {text-align:right !important;}
+.vertical-t {vertical-align:top !important;}
+.vertical-m {vertical-align:middle !important;}
+.vertical-b {vertical-align:bottom !important;}
+.float-l {float:left !important;}
+.float-r {float:right !important;}
+.float-n {float:none !important;}
+
+/* clear */
+.clear:after{content:".";height:0;font-size:0;visibility:hidden;display:block;clear:both;}
+.clear{display:inline-block;}
+* html .clear{height:0;}
+.clear{display:block;}
+.clear-both{clear:both;}
+
+/* link */
+a {color:#898989; text-decoration:none;}
+a:link {color:#656565;}
+a:visited {color:#656565}
+a:hover {color:#666666;}
+a:active {color:#898989;}

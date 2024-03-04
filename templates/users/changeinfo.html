@@ -1,0 +1,143 @@
+<!DOCTYPE html>
+<html lang="en">
+  {% load static %}
+
+  <head>
+    <meta charset="UTF-8" />
+    <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>폐수일지(WMS)</title>
+    <link
+      rel="stylesheet"
+      href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.8.2/css/all.min.css"
+    />
+    <link
+      rel="shortcut icon"
+      type="image/x-icon"
+      href="{% static 'image/pample_logo_symbol.png' %}"
+    />
+    <link rel="stylesheet" href="{% static 'css/reset.css' %}" />
+    <link rel="stylesheet" href="{% static 'css/navbar.css' %}" />
+    <link rel="stylesheet" href="{% static 'css/changeInfo.css' %}" />
+    
+  </head>
+  <body>
+    <nav>
+      <div class="navbar__title-box">
+        <img
+          src="{% static 'image/pample_logo_symbol.png' %}"
+          class="navbar__icon"
+        />
+        <div class="navbar__title">
+          <a href="/list">폐수시설 운영일지</a>
+        </div>
+      </div>
+      <ul class="navbar__menu">
+        <li><a href="/insert/today">폐수일지 입력</a></li>
+        <li><a href="/list">폐수일지 리스트</a></li>
+        <li><a href="/changeInfo">사용자정보 변경</a></li>
+        <li><a href="/logout">로그아웃</a></li>
+      </ul>
+      <a href="#" class="navbar__toogleBtn">
+        <i class="fas fa-bars"></i>
+      </a>
+    </nav>
+    <div class="content">
+      <form method="post" onsubmit="return onCheck();" action=".">
+        {% csrf_token %}
+        <div class="content__box">
+          <table>
+            <tr>
+              <th>아이디</th>
+              <td>
+                <input
+                  type="text"
+                  name="user_id"
+                  value="{{ user_info.user_id }}"
+                  disabled
+                />
+              </td>
+            </tr>
+          </table>
+          <!-- <table>
+            <tr>
+              <th>패스워드</th>
+              <td><input
+                    type="password"
+                    name="password" /></td>
+            </tr>
+          </table>
+          <table>
+            <tr>
+              <th>패스워드 확인</th>
+              <td><input
+                    type="text"
+                    name="pwd_confirm" /></td>
+            </tr>
+          </table> -->
+          <table>
+            <tr>
+              <th>휴대폰 번호</th>
+              <td>
+                <input type="text" name="hp" value="{{ user_info.hp }}" />
+              </td>
+            </tr>
+          </table>
+          <table>
+            <tr>
+              <th>이메일</th>
+              <td>
+                <input
+                  type="text"
+                  id="required-input-1"
+                  name="email"
+                  value="{{ user_info.email }}"
+                />
+              </td>
+            </tr>
+          </table>
+          <table>
+            <tr>
+              <th>사업자상호</th>
+              <td>
+                <input
+                  type="text"
+                  id="required-input-2"
+                  name="business_name"
+                  value="{{ user_info.business_name }}"
+                />
+              </td>
+            </tr>
+          </table>
+          <table>
+            <tr>
+              <th>사업자주소</th>
+              <td>
+                <input
+                  type="text"
+                  name="business_add"
+                  value="{{ user_info.business_add }}"
+                />
+              </td>
+            </tr>
+          </table>
+          <table>
+            <tr>
+              <th>사업자등록번호</th>
+              <td>
+                <input
+                  type="text"
+                  name="business_regnum"
+                  value="{{ user_info.business_regnum }}"
+                />
+              </td>
+            </tr>
+          </table>
+          <button type="submit" class="submit__button">저장</button>
+        </div>
+      </form>
+    </div>
+    <script src="{% static 'js/nav.js' %}"></script>
+    <script src="{% static 'js/changeInfo.js' %}"></script>
+  </body>
+</html>

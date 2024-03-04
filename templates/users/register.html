@@ -1,0 +1,240 @@
+<!DOCTYPE html>
+<html lang="en">
+  {% load static %}
+
+  <head>
+    <meta charset="utf-8" />
+    <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <meta name="description" content="" />
+    <meta name="author" content="pample" />
+    <meta name="generator" content="pample" />
+
+    <title>폐수일지</title>
+    <link
+      rel="shortcut icon"
+      type="image/x-icon"
+      href="{% static 'image/pample_logo_symbol.png' %}"
+    />
+    <link
+      rel="icon"
+      href="{% static 'image/favicon.ico' %}"
+      type="image/x-icon"
+      sizes="16x16"
+    />
+
+    <!-- Bootstrap core CSS -->
+    <link rel="stylesheet" href="{% static 'css/bootstrap.min.css' %}" />
+
+    <link rel="stylesheet" href="{% static 'css/base.css' %}" />
+    <link rel="stylesheet" href="{% static 'css/register.css' %}" />
+  </head>
+
+  <body class="text-center">
+    {% if user.is_authenticated %}
+    <script type="text/javascript">
+      location.href = "/list";
+    </script>
+    {% endif %}
+
+    <main class="form-signin">
+      <form method="post" action="." onsubmit="return onSubmit();">
+        {% csrf_token %}
+        <img
+          class="mb-4"
+          src="{% static 'image/pample_logo_symbol.png' %}"
+          alt=""
+          width="72"
+          height="72"
+          onclick="location.href='/'"
+        />
+        <h1 class="h3 mb-3 fw-normal">회원가입</h1>
+
+        <!-- 아이디 입력 -->
+        <div class="form-floating">
+          <input
+            id="floatingInput username"
+            class="form-control form-border"
+            type="id"
+            placeholder="아이디"
+            name="user_id"
+            maxlength="15"
+            oninput="this.value = this.value.replace(/[^A-Za-z0-9]/g, '').replace(/(\..*)\./g, '$1');"
+            required
+          />
+
+          <label for="floatingInput">
+            <p class="p-name">ID</p>
+            <p class="p-ex">(4~15자리의 영문, 숫자 조합)</p>
+          </label>
+        </div>
+
+        <span id="id_error" class="forms_error" style="margin-top: 2px"> </span>
+
+        <p class="mt-1 text-muted"></p>
+
+        <!-- 패스워드 입력 -->
+        <div class="form-floating">
+          <input
+            id="floatingPassword2"
+            class="form-control form-border"
+            type="password"
+            placeholder="Password"
+            name="password2"
+            maxlength="20"
+            required
+          />
+
+          <label for="floatingPassword2">
+            <p class="p-name">Password</p>
+            <p class="p-ex">(8개 이상의 문자, 숫자 조합)</p>
+          </label>
+        </div>
+
+        <span
+          id="pw2_error"
+          class="forms_error"
+          style="margin-top: -10px; text-align: left"
+        >
+          <!--비밀번호 에러메세지-->
+        </span>
+
+        <p class="mt-1 text-muted"></p>
+
+        <!--비밀번호확인-->
+        <div class="form-floating">
+          <input
+            id="floatingPassword1"
+            class="form-control form-border"
+            type="password"
+            placeholder="Password"
+            name="password1"
+            maxlength="20"
+            required
+          />
+
+          <label for="floatingPassword1"> Password 확인 </label>
+        </div>
+
+        <span id="pw1_error" class="forms_error" style="margin-top: -10px">
+          <!--비밀번호 에러메세지-->
+        </span>
+
+        <p class="mt-1 text-muted"></p>
+
+        <!-- 지역 선택 -->
+        <div class="form-floating">
+          <select
+            id="area"
+            name="area"
+            class="form-control form-border select form-select"
+            style="mb-3"
+          >
+            <option selected hidden value="">지역명</option>
+            {% for rg in region %}
+            <option>{{rg}}</option>
+            {% endfor %}
+          </select>
+
+          <label for="floatingPassword1"> 지역 선택 </label>
+        </div>
+        <p class="mt-1 text-muted"></p>
+        <span id="select1_error" class="forms_error" style="margin-top: -10px">
+          <!--select에러메시지-->
+        </span>
+        <!--이메일 입력-->
+        <div class="form-floating">
+          <input
+            id="floatingInput user_email"
+            class="form-control form-border"
+            type="email"
+            placeholder="이메일"
+            name="user_email"
+            maxlength="128"
+            required
+          />
+
+          <label for="floatingInput">
+            <p class="p-name">사업자 이메일</p>
+            <p class="p-ex">(레포트 수신 이메일 입력)</p>
+          </label>
+        </div>
+        <span id="email_error" class="forms_error" style="margin-top: 2px">
+        </span>
+
+        <p class="mt-1 text-muted"></p>
+
+        <!-- 상호 입력 -->
+        <div class="form-floating">
+          <input
+            id="floatingInput BusinessName"
+            class="form-control form-border"
+            type="text"
+            placeholder="사업장명"
+            name="BusinessName"
+            maxlength="110"
+            required
+          />
+
+          <label for="floatingInput">
+            <p class="p-name">사업장명</p>
+            <p class="p-ex">(상호명 입력)</p>
+          </label>
+        </div>
+
+        <p class="mt-1 text-muted"></p>
+
+        <!--사업자번호 입력-->
+        <div class="form-floating">
+          <input
+            id="floatingInput BusinessNumber"
+            class="form-control form-border"
+            type="text"
+            placeholder="사업자번호"
+            name="BusinessNumber"
+            maxlength="10"
+            oninput="this.value = this.value.replace(/[^0-9.]/g, '').replace(/(\..*)\./g, '$1');"
+          />
+
+          <label for="floatingHP">
+            <p class="p-name">사업자번호</p>
+            <p class="p-ex">(하이픈(-)을 제외한 숫자로 입력)</p>
+          </label>
+        </div>
+
+        <p class="mt-1 text-muted"></p>
+
+        <!--휴대폰번호-->
+        <div class="form-floating">
+          <input
+            id="id_hp floatingHP"
+            class="form-control form-border-hp"
+            type="text"
+            placeholder="휴대폰번호"
+            name="hp"
+            maxlength="11"
+            oninput="this.value = this.value.replace(/[^0-9.]/g, '').replace(/(\..*)\./g, '$1');"
+          />
+
+          <label for="floatingHP">
+            <p class="p-name">H.P</p>
+            <p class="p-ex">(하이픈(-)을 제외한 숫자로 입력)</p>
+          </label>
+        </div>
+
+        <button
+          class="w-100 btn btn-lg btn-primary btn-color mt-3"
+          type="submit"
+        >
+          회원가입
+        </button>
+      </form>
+
+      <a class="before" href="/"> 이전 페이지로 </a>
+    </main>
+  </body>
+
+  <iframe name="blankifr" style="display: none"></iframe>
+  <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.6.3/jquery.min.js"></script>
+  <script src="{% static 'js/register.js' %}"></script>
+</html>
